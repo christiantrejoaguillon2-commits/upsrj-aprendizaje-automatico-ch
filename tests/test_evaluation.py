@@ -33,6 +33,8 @@ FEATURE_2 = "FUELCONSUMPTION_COMB"
 BASE = "CO2EMISSIONS"
 HISTOGRAM = os.path.join(OUTPUT_DIR, "histogram.png")
 
+# ===================== Clases Personalizadas =====================
+
 class CustomTestResult(unittest.TextTestResult):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,15 +42,17 @@ class CustomTestResult(unittest.TextTestResult):
 
     def addSuccess(self, test):
         super().addSuccess(test)
-        self.successes.append((test))
+        self.successes.append(test)
 
 class CustomTestRunner(unittest.TextTestRunner):
     def _makeResult(self):
         return CustomTestResult(self.stream, self.descriptions, self.verbosity)
 
+# ===================== Evaluación 1 =====================
+
 class TestEvaluationOne(unittest.TestCase):
-    
-    # ===================== intro_numpy =====================
+
+    # ---------- intro_numpy ----------
 
     def test_ten_zeros_array(self):
         result = inp.ten_zeros_array(10)
@@ -60,7 +64,7 @@ class TestEvaluationOne(unittest.TestCase):
     def test_floats_array(self):
         result = inp.floats_array(1, 5)
         self.assertTrue(np.allclose(result, np.array([1., 2., 3., 4.])))
-    
+
     def test_invert_array(self):
         arr = np.array([1, 2, 3])
         result = inp.invert_array(arr)
@@ -103,7 +107,7 @@ class TestEvaluationOne(unittest.TestCase):
         self.assertAlmostEqual(median, 2.0)
         self.assertAlmostEqual(std, 0.816, places=2)
 
-    # ===================== intro_pandas =====================
+    # ---------- intro_pandas ----------
 
     def test_get_head(self):
         df = pd.DataFrame({'a': [1, 2, 3, 4]})
@@ -131,7 +135,7 @@ class TestEvaluationOne(unittest.TestCase):
         df2 = pd.DataFrame({'x': [1, 2]})
         self.assertTrue(ipd.compare_dfs(df1, df2))
 
-    # ===================== intro_scipy =====================
+    # ---------- intro_scipy ----------
 
     def test_solve_linear(self):
         A = np.array([[2, 1], [1, 3]])
@@ -157,9 +161,9 @@ class TestEvaluationOne(unittest.TestCase):
         self.assertEqual(mode, 2.0)
 
     def test_low_pass_filter(self):
-        signal = np.sin(2 * np.pi * 5 * np.linspace(0, 1, 100))
-        result = isp.low_pass_filter(signal, fs=100)
-        self.assertEqual(len(result), len(signal))
+        signal_data = np.sin(2 * np.pi * 5 * np.linspace(0, 1, 100))
+        result = isp.low_pass_filter(signal_data, fs=100)
+        self.assertEqual(len(result), len(signal_data))
 
     def test_main_execution(self):
         # Ejecutar main y capturar status
@@ -167,25 +171,24 @@ class TestEvaluationOne(unittest.TestCase):
         self.assertEqual(status, os.EX_OK, "main() no terminó con EX_OK")
 
         # Verificar que intro.csv_registers funciona
-        total, df = ipd.csv_registers(main.FILE)
+        total, df = ipd.csv_registers(main.CSV_FILE)
         self.assertIsNotNone(total, "csv_registers devolvió total = None")
         self.assertIsInstance(df, pd.DataFrame, "csv_registers no devolvió un DataFrame válido")
         self.assertFalse(df.empty, "csv_registers devolvió un DataFrame vacío")
 
         # Verificar existencia de archivos de salida
-        output_csv = os.path.join(os.path.dirname(main.FILE), "..", "outputs", "aprobados.csv")
-        output_plot = os.path.join(os.path.dirname(main.FILE), "..", "analisis.png")
+        output_csv = os.path.join(os.path.dirname(main.CSV_FILE), "..", "outputs", "aprobados.csv")
+        output_plot = os.path.join(os.path.dirname(main.CSV_FILE), "..", "outputs", "analisis.png")
         self.assertTrue(os.path.exists(output_csv), "No se encontró 'aprobados.csv'")
         self.assertTrue(os.path.exists(output_plot), "No se encontró 'analisis.png'")
 
-class TestEvaluationTwo(unittest.TestCase):
+# ===================== Evaluación 2 =====================
 
-    # ===================== linear_regression =====================
+class TestEvaluationTwo(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if not os.path.exists(OUTPUT_DIR):
-            os.mkdir(OUTPUT_DIR)
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
         cls.model = LinearRegressionCompare(
             url=SOURCE_URL,
             hist=HISTOGRAM,
@@ -205,8 +208,8 @@ class TestEvaluationTwo(unittest.TestCase):
         self.assertIsInstance(self.model.p2, np.ndarray)
 
     def test_model_training(self):
-        coef1 = self.model.m1.coef_[0][0]
-        coef2 = self.model.m2.coef_[0][0]
+        coef1 = self.model.m1.coef_[0]
+        coef2 = self.model.m2.coef_[0]
         self.assertIsInstance(coef1, float)
         self.assertIsInstance(coef2, float)
 
@@ -227,17 +230,17 @@ class TestEvaluationTwo(unittest.TestCase):
         for arr in d1:
             self.assertIsInstance(arr, np.ndarray)
 
+# ===================== Ejecución del Script =====================
+
 if __name__ == '__main__':
-    
-    # ===================== ejercicio 1 =====================
-    
+
+    # ---------- Evaluación 1 ----------
     suite1 = unittest.defaultTestLoader.loadTestsFromTestCase(TestEvaluationOne)
     silent_stream1 = io.StringIO()
     runner1 = CustomTestRunner(stream=silent_stream1, verbosity=0)
     result1 = runner1.run(suite1)
 
     print(f"{BOLD}EVALUACION 1{RESET}")
-    # Resultados individuales
     print(SEPARATOR)
     print(f"{BOLD}Resultados individuales:{RESET}")
     for test_case in result1.successes:
@@ -246,12 +249,10 @@ if __name__ == '__main__':
     for test_case, traceback in result1.failures + result1.errors:
         name = getattr(test_case, "_testMethodName", str(test_case))
         print(f"{name}: {RED}{BOLD}FAILED{RESET}")
-        # Extraer solo el mensaje de la última línea del traceback
         last_line = traceback.strip().split('\n')[-1]
         mensaje = last_line.split(':')[-1].strip()
         print(f"- detalles: {LIGHT_RED}{mensaje}{RESET}")
 
-    # Resumen final
     print(SEPARATOR)
     print(f"{BOLD}Resumen final:{RESET}")
     if result1.wasSuccessful():
@@ -260,15 +261,13 @@ if __name__ == '__main__':
         print(f"{RED}{BOLD}FAILED:{RESET} Uno o más tests fallaron.")
     print(SEPARATOR)
 
-    # ===================== ejercicio 2 =====================
-
+    # ---------- Evaluación 2 ----------
     suite2 = unittest.defaultTestLoader.loadTestsFromTestCase(TestEvaluationTwo)
     silent_stream2 = io.StringIO()
     runner2 = CustomTestRunner(stream=silent_stream2, verbosity=0)
     result2 = runner2.run(suite2)
 
     print(f"{BOLD}EVALUACION 2{RESET}")
-    # Resultados individuales
     print(SEPARATOR)
     print(f"{BOLD}Resultados individuales:{RESET}")
     for test_case in result2.successes:
@@ -277,12 +276,10 @@ if __name__ == '__main__':
     for test_case, traceback in result2.failures + result2.errors:
         name = getattr(test_case, "_testMethodName", str(test_case))
         print(f"{name}: {RED}{BOLD}FAILED{RESET}")
-        # Extraer solo el mensaje de la última línea del traceback
         last_line = traceback.strip().split('\n')[-1]
         mensaje = last_line.split(':')[-1].strip()
         print(f"- detalles: {LIGHT_RED}{mensaje}{RESET}")
 
-    # Resumen final
     print(SEPARATOR)
     print(f"{BOLD}Resumen final:{RESET}")
     if result2.wasSuccessful():
@@ -291,4 +288,5 @@ if __name__ == '__main__':
         print(f"{RED}{BOLD}FAILED:{RESET} Uno o más tests fallaron.")
     print(SEPARATOR)
 
-    sys.exit(not result1.wasSuccessful() and not result2.wasSuccessful() )
+    # Salida final (exit code)
+    sys.exit(not (result1.wasSuccessful() and result2.wasSuccessful()))

@@ -15,10 +15,10 @@ from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-from .data_source import DataSource as ds
+from regression_models.data_source import DataSource as ds
 
 class LinearRegressionCompare:
-    def __init__(self, url: str, hist: str, base: str, f1: str, f2: str, out: str):
+    def _init_(self, url: str, hist: str, base: str, f1: str, f2: str, out: str):
         self.source = ds(url)
         self.histogram = hist
         # Característica base de comparación

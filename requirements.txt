@@ -1,6 +1,7 @@
-numpy
 pandas
+numpy
 scipy
-pytest
-matplotlib
 scikit-learn
+matplotlib
+seaborn
+PyYAML

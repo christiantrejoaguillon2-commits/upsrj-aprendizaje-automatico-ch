@@ -78,7 +78,7 @@ def invert_array(arg: np.ndarray) -> np.ndarray:
 # NOTE: https://numpy.org/doc/stable/reference/generated/numpy.matrix.html
 def square_matrix(n: int, start: int, stop: int) -> np.ndarray:
     """
-    Genera una matriz cuadrada de orden n con valores enteros aleatorios desde start hasta stop.
+    Genera una matriz cuadrada de orden n con valores enteros desde start hasta stop.
 
     Parámetros:
     - n: int
@@ -90,9 +90,10 @@ def square_matrix(n: int, start: int, stop: int) -> np.ndarray:
 
     Retorna:
     - np.ndarray
-        Matriz cuadrada con valores enteros aleatorios.
+        Matriz cuadrada con valores enteros.
     """
-    matrix = np.random.randint(start, stop, size=(n, n))
+    data = np.arange(start, stop, dtype=int).reshape(n, n)
+    matrix = np.matrix(data)
     return matrix
 
 # Ejercicio 5
@@ -105,7 +106,7 @@ def square_matrix(n: int, start: int, stop: int) -> np.ndarray:
 # NOTE: https://numpy.org/doc/stable/reference/generated/numpy.argwhere.html
 def find_upper_five(matrix: np.ndarray) -> np.ndarray:
     """
-    Retorna una matriz booleana (0 o 1) donde 1 indica que el valor es mayor a 5.
+    Encuentra los índices de los elementos mayores a 5 en una matriz.
 
     Parámetros:
     - matrix: np.ndarray
@@ -113,10 +114,10 @@ def find_upper_five(matrix: np.ndarray) -> np.ndarray:
 
     Retorna:
     - np.ndarray
-        Matriz con 1 donde valores > 5, 0 en caso contrario.
+        Arreglo de índices donde los valores son mayores a 5.
     """
-    result = (matrix > 5).astype(int)
-    return result
+    indices = np.argwhere(matrix > 5)
+    return indices
 
 # Ejercicio 6
 # TODO: Genera una función "get_statistics" que calcule el promedio, la media y la desviación estándar de un arreglo numpy.
@@ -138,7 +139,7 @@ def get_statistics(arg: np.ndarray) -> tuple[float, float, float]:
         Promedio, mediana y desviación estándar como flotantes.
     """
     mean = np.mean(arg)
-    median = np.median(arg) 
+    median = np.median(arg)
     standard = np.std(arg)
     return (mean, median, standard)
 

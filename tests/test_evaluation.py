@@ -39,8 +39,8 @@ HISTOGRAM = os.path.join(OUTPUT_DIR, "histogram.png")
 CORRELATION = os.path.join(OUTPUT_DIR, "correlation.png")
 
 class CustomTestResult(unittest.TextTestResult):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def _init_(self, *args, **kwargs):
+        super()._init_(*args, **kwargs)
         self.successes = []
 
     def addSuccess(self, test):
@@ -234,7 +234,7 @@ class TestEvaluationTwo(unittest.TestCase):
 
 class TestEvaluationThree(unittest.TestCase):
 
-    # ===================== multiple_linear_regression =====================
+    # ===================== linear_regression =====================
 
     @classmethod
     def setUpClass(cls):
@@ -259,7 +259,6 @@ class TestEvaluationThree(unittest.TestCase):
 
     def test_model_training(self):
         coef = self.model.m.coef_[0]
-        # Para regresión lineal múltiple, coef es un array
         self.assertTrue(isinstance(coef, (float, np.floating, np.ndarray)))
 
     def test_output_files_created(self):
@@ -280,7 +279,7 @@ class TestEvaluationThree(unittest.TestCase):
 
 class TestEvaluationFour(unittest.TestCase):
 
-    # ===================== logistic_regression =====================
+    # ===================== linear_regression =====================
 
     @classmethod
     def setUpClass(cls):
@@ -302,7 +301,6 @@ class TestEvaluationFour(unittest.TestCase):
 
     def test_model_training(self):
         coef = self.model.m.coef_[0]
-        # Para regresión logística, coef es un array
         self.assertTrue(isinstance(coef, (float, np.floating, np.ndarray)))
 
     def test_output_files_created(self):
@@ -318,7 +316,7 @@ class TestEvaluationFour(unittest.TestCase):
         for arr in d:
             self.assertIsInstance(arr, np.ndarray)
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     
     # ===================== ejercicio 1 =====================
     

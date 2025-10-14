@@ -21,7 +21,7 @@ warnings.filterwarnings('ignore')
 from regression_models.data_source import DataSource as ds
 
 class LogisticRegressionCompare:
-    def _init_(self, url: str, base: str, out: str):
+    def __init__(self, url: str, base: str, out: str):
         self.source = ds(url, churn=True)
         self.x = np.asarray(self.source.data[['tenure', 'age', 'address', 'income', 'ed', 'employ', 'equip']])
         self.y = np.asarray(self.source.data[base])

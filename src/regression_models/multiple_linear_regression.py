@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 from regression_models.data_source import DataSource as ds
 
 class MultipleLinearRegressionCompare:
-    def _init_(self, url: str, corr: str, f1: str, f2: str, base: str, out: str):
+    def __init__(self, url: str, corr: str, f1: str, f2: str, base: str, out: str):
         self.source = ds(url)
         # Característica base de comparación
         self.base = base

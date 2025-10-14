@@ -12,7 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 class DataSource:
-    def _init_(self, url: str, churn: bool=False):
+    def __init__(self, url: str, churn: bool=False):
         self.url = url
         self.data = self.fetch_url()
         self.relevant_features = self.set_relevant_features(churn=churn)

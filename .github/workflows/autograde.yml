@@ -24,17 +24,17 @@ jobs:
     - name: Configurar entorno con Dev Container
       uses: devcontainers/ci@v0.3
       with:
-        push: false
         runCmd: echo "Entorno listo para evaluación"
+        skipPush: true
 
     - name: Ejecutar proyecto
       uses: devcontainers/ci@v0.3
       with:
-        push: false
         runCmd: python src/main.py
+        skipPush: true
 
     - name: Ejecutar pruebas unitarias
       uses: devcontainers/ci@v0.3
       with:
-        push: false
         runCmd: python tests/test_evaluation.py
+        skipPush: true

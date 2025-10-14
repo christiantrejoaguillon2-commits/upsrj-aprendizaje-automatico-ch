@@ -5,7 +5,7 @@ on:
     branches:
       - develop
       - 'feature/exercise**'
-  workflow_dispatch:  
+  workflow_dispatch:
   pull_request:
     branches:
       - develop
@@ -24,14 +24,17 @@ jobs:
     - name: Configurar entorno con Dev Container
       uses: devcontainers/ci@v0.3
       with:
+        push: false
         runCmd: echo "Entorno listo para evaluación"
 
     - name: Ejecutar proyecto
       uses: devcontainers/ci@v0.3
       with:
+        push: false
         runCmd: python src/main.py
 
     - name: Ejecutar pruebas unitarias
       uses: devcontainers/ci@v0.3
       with:
+        push: false
         runCmd: python tests/test_evaluation.py

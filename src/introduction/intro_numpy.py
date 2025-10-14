@@ -28,7 +28,7 @@ def ten_zeros_array(n: int) -> np.ndarray:
     - np.ndarray
         Arreglo de ceros de longitud n.
     """
-    arg = None
+    arg = np.zeros(n)
     return arg
 
 # Ejercicio 2
@@ -50,7 +50,7 @@ def floats_array(start: int, stop: int) -> np.ndarray:
     - np.ndarray
         Arreglo de números flotantes.
     """
-    arg = None
+    arg = np.arange(start, stop, dtype=float)
     return arg
 
 # Ejercicio 3 
@@ -69,7 +69,7 @@ def invert_array(arg: np.ndarray) -> np.ndarray:
     - np.ndarray
         Arreglo invertido.
     """
-    inverted = None
+    inverted = np.flip(arg)
     return inverted
 
 # Ejercicio 4
@@ -78,7 +78,7 @@ def invert_array(arg: np.ndarray) -> np.ndarray:
 # NOTE: https://numpy.org/doc/stable/reference/generated/numpy.matrix.html
 def square_matrix(n: int, start: int, stop: int) -> np.ndarray:
     """
-    Genera una matriz cuadrada de orden n con valores enteros desde start hasta stop.
+    Genera una matriz cuadrada de orden n con valores enteros aleatorios desde start hasta stop.
 
     Parámetros:
     - n: int
@@ -90,9 +90,9 @@ def square_matrix(n: int, start: int, stop: int) -> np.ndarray:
 
     Retorna:
     - np.ndarray
-        Matriz cuadrada con valores enteros.
+        Matriz cuadrada con valores enteros aleatorios.
     """
-    matrix = None
+    matrix = np.random.randint(start, stop, size=(n, n))
     return matrix
 
 # Ejercicio 5
@@ -105,7 +105,7 @@ def square_matrix(n: int, start: int, stop: int) -> np.ndarray:
 # NOTE: https://numpy.org/doc/stable/reference/generated/numpy.argwhere.html
 def find_upper_five(matrix: np.ndarray) -> np.ndarray:
     """
-    Encuentra los índices de los elementos mayores a 5 en una matriz.
+    Retorna una matriz booleana (0 o 1) donde 1 indica que el valor es mayor a 5.
 
     Parámetros:
     - matrix: np.ndarray
@@ -113,10 +113,10 @@ def find_upper_five(matrix: np.ndarray) -> np.ndarray:
 
     Retorna:
     - np.ndarray
-        Arreglo de índices donde los valores son mayores a 5.
+        Matriz con 1 donde valores > 5, 0 en caso contrario.
     """
-    indices = None
-    return indices
+    result = (matrix > 5).astype(int)
+    return result
 
 # Ejercicio 6
 # TODO: Genera una función "get_statistics" que calcule el promedio, la media y la desviación estándar de un arreglo numpy.
@@ -137,9 +137,9 @@ def get_statistics(arg: np.ndarray) -> tuple[float, float, float]:
     - tuple: (mean, median, std)
         Promedio, mediana y desviación estándar como flotantes.
     """
-    mean = None
-    median = None
-    standard = None
+    mean = np.mean(arg)
+    median = np.median(arg) 
+    standard = np.std(arg)
     return (mean, median, standard)
 
 # Ejercicio 7
@@ -158,7 +158,7 @@ def identity_matrix(n: int) -> np.ndarray:
     - np.ndarray
         Matriz identidad de tamaño n x n.
     """
-    matrix = None
+    matrix = np.identity(n)
     return matrix
 
 # Ejercicio 8
@@ -179,7 +179,7 @@ def multiply_matrices(a:np.ndarray, b:np.ndarray) -> np.ndarray:
     - np.ndarray
         Resultado de la multiplicación matricial.
     """
-    multiplication = None
+    multiplication = np.matmul(a, b)
     return multiplication
 
 # Ejercicio 9
@@ -200,7 +200,7 @@ def normalize(arg:np.ndarray) -> np.ndarray:
     - np.ndarray
         Arreglo normalizado.
     """
-    normalized = None
+    normalized = (arg - np.min(arg)) / (np.max(arg) - np.min(arg))
     return normalized
 
 # Ejercicio 10
@@ -223,5 +223,5 @@ def count_in_range(arr: np.ndarray, a: float, b: float) -> int:
     - int
         Número de elementos dentro del rango.
     """
-    count = None
+    count = np.sum((arr >= a) & (arr <= b))
     return count

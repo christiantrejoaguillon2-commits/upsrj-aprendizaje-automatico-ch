@@ -26,7 +26,7 @@ class LogisticRegressionCompare:
         self.x = np.asarray(self.source.data[['tenure', 'age', 'address', 'income', 'ed', 'employ', 'equip']])
         self.y = np.asarray(self.source.data[base])
         # Preprocesamiento para estandarizar las características. De esta manera el modelo no se inclinará
-        # a favor de ninguna característica debido a su magnitud.
+        # a favor de ninguna característica debido a su magnitud
         self.std_scaler, self.x_std = self.standarize(x=self.x)
         self.d = self.prepare_data(x=self.x_std, y=self.y, prc=0.2, random_state=4)
         self.m = self.create_model()

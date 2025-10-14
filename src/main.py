@@ -8,7 +8,7 @@
 # Descripción: Script principal del proyecto
 # ============================================================
 import introduction as intro
-import regression_models as rm
+from regression_models import linear_regression as lr
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, os
@@ -37,21 +37,21 @@ def introduction():
         print(f"- Estudiantes cargados: {total}")
 
         # Filtrar estudiantes con calificación > 8
-        aprobados = intro.get_above(df, col="calificacion", n=8)
+        aprobados = intro.get_above(df, col="promedio", n=8)
         if aprobados is None or aprobados.empty:
             print("Error: No se pudo filtrar estudiantes aprobados.\n")
             return os.EX_SOFTWARE
         print(f"- Estudiantes aprobados:\n{aprobados}")
 
         # Agrupar por carrera y calcular promedio
-        promedio_por_carrera = intro.group_and_average(aprobados, group="carrera", avg="calificacion")
+        promedio_por_carrera = intro.group_and_average(aprobados, group="carrera", avg="promedio")
         if promedio_por_carrera is None or promedio_por_carrera.empty:
             print("Error: No se pudo calcular el promedio por carrera.\n")
             return os.EX_SOFTWARE
         print(f"- Promedio por carrera:\n{promedio_por_carrera}")
 
         # Exportar resultados
-        OUTPUT = os.path.join(os.path.dirname(__file__), "outputs", "aprobados.csv")
+        OUTPUT = os.path.join(os.path.dirname(__file__), "output", "aprobados.csv")
         try:
             intro.export_data(aprobados, OUTPUT)
             print(f"- Datos exportados a: {OUTPUT}")
@@ -103,7 +103,7 @@ def introduction():
             plt.legend()
             plt.grid(True)
             plt.tight_layout()
-            plt.savefig("analisis.png", dpi=300)
+            plt.savefig(os.path.join(os.path.dirname(OUTPUT), "analisis.png"), dpi=300)
             plt.show()
             print("Gráfica guardada como 'analisis.png'\n")
         except:
@@ -138,7 +138,7 @@ def linear_regression():
             os.mkdir(OUTPUT)
         
         # Comparación de modelos de regresión lineal
-        rm.LinearRegressionCompare(url=SOURCE_URL, hist=HISTOGRAM, base=BASE, f1=FEATURE_1, f2=FEATURE_2, out=OUTPUT)
+        lr.LinearRegressionCompare(url=SOURCE_URL, hist=HISTOGRAM, base=BASE, f1=FEATURE_1, f2=FEATURE_2, out=OUTPUT)
         print(f"Comparación de modelos: [{FEATURE_1} {FEATURE_2}] con {BASE} completada.\n")
     except Exception as e:
         # Status: Error de software
@@ -147,60 +147,8 @@ def linear_regression():
         
     # Return de la función: status EX_OK (0) | EX_SOFTWARE (70)
     return status  
-
-def multiple_linear_regression():
-    # Status: OK
-    status = os.EX_OK
     
-    # Definición de parámetros para comparación de modelos de regresión lineal
-    OUTPUT = os.path.join(os.path.dirname(__file__), "output")
-    CORRELATION = os.path.join(OUTPUT, "correlation.png")
-    BASE = "CO2EMISSIONS"
-    FEATURE_1 = "ENGINESIZE"
-    FEATURE_2 = "FUELCONSUMPTION_COMB"
-    
-    try:
-        # Creación de directorio
-        if not os.path.exists(OUTPUT):
-            os.mkdir(OUTPUT)
-        
-        # Comparación de modelos de regresión lineal
-        rm.MultipleLinearRegressionCompare(url=SOURCE_URL, corr=CORRELATION, base=BASE, f1=FEATURE_1, f2=FEATURE_2, out=OUTPUT)
-        print(f"Correlación: [{FEATURE_1} {FEATURE_2}] con {BASE} completada.\n")
-    except Exception as e:
-        # Status: Error de software
-        status = os.EX_SOFTWARE
-        print(f"Error inesperado: {e}\n")
-        
-    # Return de la función: status EX_OK (0) | EX_SOFTWARE (70)
-    return status  
-
-def logistic_regression():
-    # Status: OK
-    status = os.EX_OK
-    
-    # Definición de parámetros para comparación de modelos de regresión logistica
-    CHURN_URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-ML0101EN-SkillsNetwork/labs/Module%203/data/ChurnData.csv"
-    OUTPUT = os.path.join(os.path.dirname(__file__), "output")
-    BASE = "churn"
-        
-    try:
-        # Creación de directorio
-        if not os.path.exists(OUTPUT):
-            os.mkdir(OUTPUT)
-        
-        # Comparación de modelos de regresión lineal
-        rm.LogisticRegressionCompare(url=CHURN_URL, base=BASE, out=OUTPUT)
-        print(f"Coeficientes: '{BASE}' completada.\n")
-    except Exception as e:
-        # Status: Error de software
-        status = os.EX_SOFTWARE
-        print(f"Error inesperado: {e}\n")
-        
-    # Return de la función: status EX_OK (0) | EX_SOFTWARE (70)
-    return status  
-
-def main():
+def main(): 
     
     # Status: OK
     status = os.EX_OK
@@ -214,16 +162,6 @@ def main():
     print(f"EJERCICIO 2")
     print(SEPARATOR)
     status = linear_regression()
-    
-    # Evaluación de tercer ejercicio
-    print(f"EJERCICIO 3")
-    print(SEPARATOR)
-    status = multiple_linear_regression()
-    
-    # Evaluación de cuarto ejercicio
-    print(f"EJERCICIO 4")
-    print(SEPARATOR)
-    status = logistic_regression()
     
     # Return de la función: status EX_OK (0) | EX_SOFTWARE (70)
     return status  

@@ -1,0 +1,12 @@
+{
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/src/introduction",
+        "${workspaceFolder}/src/regression_models"
+    ],
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/src/introduction",
+        "${workspaceFolder}/src/regression_models"
+    ]
+}

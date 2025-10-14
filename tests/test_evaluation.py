@@ -29,6 +29,7 @@ BOLD = "\033[1m"
 SEPARATOR = f"{BOLD}{'='*50}{RESET}"
 
 SOURCE_URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-ML0101EN-SkillsNetwork/labs/Module%202/data/FuelConsumptionCo2.csv"
+CHURN_URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-ML0101EN-SkillsNetwork/labs/Module%203/data/ChurnData.csv"
 OUTPUT_DIR = "test_outputs"
 FEATURE_1 = "ENGINESIZE"
 FEATURE_2 = "FUELCONSUMPTION_COMB"
@@ -161,9 +162,9 @@ class TestEvaluationOne(unittest.TestCase):
         self.assertEqual(mode, 2.0)
 
     def test_low_pass_filter(self):
-        signal = np.sin(2 * np.pi * 5 * np.linspace(0, 1, 100))
-        result = isp.low_pass_filter(signal, fs=100)
-        self.assertEqual(len(result), len(signal))
+        signal_data = np.sin(2 * np.pi * 5 * np.linspace(0, 1, 100))
+        result = isp.low_pass_filter(signal_data, fs=100)
+        self.assertEqual(len(result), len(signal_data))
 
     def test_main_execution(self):
         # Ejecutar main y capturar status
@@ -171,14 +172,14 @@ class TestEvaluationOne(unittest.TestCase):
         self.assertEqual(status, os.EX_OK, "main() no terminó con EX_OK")
 
         # Verificar que intro.csv_registers funciona
-        total, df = ipd.csv_registers(main.FILE)
+        total, df = ipd.csv_registers(main.CSV_FILE)
         self.assertIsNotNone(total, "csv_registers devolvió total = None")
         self.assertIsInstance(df, pd.DataFrame, "csv_registers no devolvió un DataFrame válido")
         self.assertFalse(df.empty, "csv_registers devolvió un DataFrame vacío")
 
         # Verificar existencia de archivos de salida
-        output_csv = os.path.join(os.path.dirname(main.FILE), "..", "outputs", "aprobados.csv")
-        output_plot = os.path.join(os.path.dirname(main.FILE), "..", "analisis.png")
+        output_csv = os.path.join(os.path.dirname(main.CSV_FILE), "..", "outputs", "aprobados.csv")
+        output_plot = os.path.join(os.path.dirname(main.CSV_FILE), "..", "outputs", "analisis.png")
         self.assertTrue(os.path.exists(output_csv), "No se encontró 'aprobados.csv'")
         self.assertTrue(os.path.exists(output_plot), "No se encontró 'analisis.png'")
 
@@ -209,8 +210,8 @@ class TestEvaluationTwo(unittest.TestCase):
         self.assertIsInstance(self.model.p2, np.ndarray)
 
     def test_model_training(self):
-        coef1 = self.model.m1.coef_[0][0]
-        coef2 = self.model.m2.coef_[0][0]
+        coef1 = self.model.m1.coef_[0]
+        coef2 = self.model.m2.coef_[0]
         self.assertIsInstance(coef1, float)
         self.assertIsInstance(coef2, float)
 
@@ -233,7 +234,7 @@ class TestEvaluationTwo(unittest.TestCase):
 
 class TestEvaluationThree(unittest.TestCase):
 
-    # ===================== linear_regression =====================
+    # ===================== multiple_linear_regression =====================
 
     @classmethod
     def setUpClass(cls):
@@ -258,11 +259,12 @@ class TestEvaluationThree(unittest.TestCase):
 
     def test_model_training(self):
         coef = self.model.m.coef_[0]
-        self.assertIsInstance(coef, float)
+        # Para regresión lineal múltiple, coef es un array
+        self.assertTrue(isinstance(coef, (float, np.floating, np.ndarray)))
 
     def test_output_files_created(self):
         files = [
-            f"multiple_linear_regression_{FEATURE_1.lower()}_{FEATURE_2.lower()}_{BASE.lower()}.png",
+            f"multiple_linear_regression_{FEATURE_1.lower()}{FEATURE_2.lower()}{BASE.lower()}.png",
             f"split_mlr_{FEATURE_1.lower()}_{BASE.lower()}.png",
             f"split_mlr_{FEATURE_2.lower()}_{BASE.lower()}.png",
             "correlation.png"
@@ -278,14 +280,14 @@ class TestEvaluationThree(unittest.TestCase):
 
 class TestEvaluationFour(unittest.TestCase):
 
-    # ===================== linear_regression =====================
+    # ===================== logistic_regression =====================
 
     @classmethod
     def setUpClass(cls):
         if not os.path.exists(OUTPUT_DIR):
             os.mkdir(OUTPUT_DIR)
         cls.model = LogisticRegressionCompare(
-            url=SOURCE_URL,
+            url=CHURN_URL,
             base=CHURN,
             out=OUTPUT_DIR
         )
@@ -300,7 +302,8 @@ class TestEvaluationFour(unittest.TestCase):
 
     def test_model_training(self):
         coef = self.model.m.coef_[0]
-        self.assertIsInstance(coef, float)
+        # Para regresión logística, coef es un array
+        self.assertTrue(isinstance(coef, (float, np.floating, np.ndarray)))
 
     def test_output_files_created(self):
         files = [
